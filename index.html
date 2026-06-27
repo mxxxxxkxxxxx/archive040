@@ -11,12 +11,18 @@
     <section id="login-screen" class="panel">
       <p class="label">ARCHIVE 040</p>
       <h1>MEMORY ARCHIVE</h1>
-      <p class="subtitle">Authentication Required</p>
+      <p class="subtitle">Authorization Required</p>
 
       <div class="form-area">
-        <label for="password">Password</label>
-        <input type="password" id="password" autocomplete="off" />
-        <button id="login-button">LOGIN</button>
+        <label for="password">Access Key</label>
+        <input
+          type="password"
+          id="password"
+          autocomplete="off"
+          placeholder="Enter Access Key"
+          spellcheck="false"
+        />
+        <button id="login-button">AUTHORIZE</button>
       </div>
 
       <p id="status-message" class="status"></p>
@@ -43,6 +49,10 @@
           Thank you.
         </p>
       </article>
+
+      <p id="connection-message" class="connection hidden">
+        Connection terminated.
+      </p>
     </section>
   </main>
 
