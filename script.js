@@ -1,11 +1,14 @@
 const correctPassword = "michelangelo";
 
+const container = document.getElementById("container");
 const loginScreen = document.getElementById("login-screen");
+const transitionScreen = document.getElementById("transition-screen");
 const letterScreen = document.getElementById("letter-screen");
 const passwordInput = document.getElementById("password");
 const loginButton = document.getElementById("login-button");
 const statusMessage = document.getElementById("status-message");
-const connectionMessage = document.getElementById("connection-message");
+const endingMessage = document.getElementById("ending-message");
+const archiveMessage = document.getElementById("archive-message");
 
 const typeSound = new Audio("type.mp3");
 const authorizeSound = new Audio("authorize.mp3");
@@ -16,9 +19,12 @@ const musicbox = new Audio("musicbox.mp3");
 musicbox.volume = 0;
 musicbox.loop = false;
 
-[typeSound, authorizeSound, errorSound, successSound].forEach((sound) => {
-  sound.volume = 0.45;
-});
+typeSound.volume = 0.32;
+authorizeSound.volume = 0.48;
+errorSound.volume = 0.45;
+successSound.volume = 0.5;
+
+let archiveMessageShown = false;
 
 window.addEventListener("load", () => {
   passwordInput.focus();
@@ -30,7 +36,7 @@ function playSound(sound) {
 }
 
 function fadeAudio(audio, targetVolume, duration) {
-  const steps = 30;
+  const steps = 40;
   const startVolume = audio.volume;
   const volumeStep = (targetVolume - startVolume) / steps;
   const stepDuration = duration / steps;
@@ -52,32 +58,84 @@ function setStatus(message, isError = false) {
   statusMessage.textContent = message;
 }
 
-function revealLetter() {
-  loginScreen.classList.add("hidden");
-  letterScreen.classList.remove("hidden");
-  letterScreen.classList.add("fade-in");
-
-  musicbox.currentTime = 0;
-  musicbox.volume = 0;
-  musicbox.play().then(() => {
-    fadeAudio(musicbox, 0.38, 2200);
-  }).catch(() => {});
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
-  setTimeout(() => {
-    connectionMessage.classList.remove("hidden");
-    connectionMessage.classList.add("fade-in");
-    fadeAudio(musicbox, 0, 5000);
-  }, 18000);
-}
-
 function resetAfterError() {
   loginButton.disabled = false;
   passwordInput.disabled = false;
   loginButton.textContent = "AUTHORIZE";
   passwordInput.value = "";
   passwordInput.focus();
+}
+
+function startMusicbox() {
+  musicbox.currentTime = 0;
+  musicbox.volume = 0;
+
+  musicbox.play().then(() => {
+    fadeAudio(musicbox, 0.38, 2400);
+  }).catch(() => {});
+}
+
+function observeRevealItems() {
+  const revealItems = document.querySelectorAll(".reveal-item");
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.16,
+    rootMargin: "0px 0px -8% 0px"
+  });
+
+  revealItems.forEach((item) => {
+    revealObserver.observe(item);
+  });
+}
+
+function observeEnding() {
+  const endingObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !archiveMessageShown) {
+        archiveMessageShown = true;
+
+        setTimeout(() => {
+          archiveMessage.classList.remove("hidden");
+          archiveMessage.classList.add("fade-in");
+          fadeAudio(musicbox, 0, 5200);
+        }, 1800);
+
+        endingObserver.unobserve(endingMessage);
+      }
+    });
+  }, {
+    threshold: 0.7
+  });
+
+  endingObserver.observe(endingMessage);
+}
+
+function revealLetter() {
+  loginScreen.classList.add("hidden");
+  transitionScreen.classList.remove("hidden");
+
+  setTimeout(() => {
+    startMusicbox();
+  }, 700);
+
+  setTimeout(() => {
+    transitionScreen.classList.add("hidden");
+    container.classList.add("reading");
+    letterScreen.classList.remove("hidden");
+    letterScreen.classList.add("fade-in");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    observeRevealItems();
+    observeEnding();
+  }, 1600);
 }
 
 function authorize() {
@@ -105,9 +163,9 @@ function authorize() {
 
   const sequence = [
     { text: "Verifying access key...", delay: 450 },
-    { text: "Authenticating... ██░░░░░░░░", delay: 1200 },
-    { text: "Authenticating... █████░░░░░", delay: 1950 },
-    { text: "Authenticating... ██████████", delay: 2700 },
+    { text: "Authenticating...\n█░░░░░░░░░", delay: 1200 },
+    { text: "Authenticating...\n████░░░░░░", delay: 1950 },
+    { text: "Authenticating...\n██████████", delay: 2700 },
     { text: "Decrypting archive...", delay: 3500 },
     { text: "Archive unlocked.", delay: 4400 },
     { text: "Welcome back.", delay: 5200 }
@@ -125,7 +183,7 @@ function authorize() {
 
   setTimeout(() => {
     revealLetter();
-  }, 6400);
+  }, 6500);
 }
 
 passwordInput.addEventListener("keydown", (event) => {
