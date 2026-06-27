@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
+  <main id="container" class="container">
     <section id="login-screen" class="panel">
       <p class="label">ARCHIVE 040</p>
       <h1>MEMORY ARCHIVE</h1>
@@ -15,134 +15,66 @@
 
       <div class="form-area">
         <label for="password">Access Key</label>
-        <input
-          type="password"
-          id="password"
-          autocomplete="off"
-          placeholder="Enter Access Key"
-          spellcheck="false"
-        />
+        <input type="password" id="password" autocomplete="off" placeholder="Enter Access Key" spellcheck="false" />
         <button id="login-button">AUTHORIZE</button>
       </div>
 
       <p id="status-message" class="status"></p>
     </section>
 
-    <section id="letter-screen" class="panel hidden">
-      <p class="label success">ARCHIVE FILE 040</p>
-      <h1>MEMORY ARCHIVE</h1>
-      <p class="subtitle">Unlocked</p>
+    <section id="transition-screen" class="transition-screen hidden">
+      <p>RESTORING MEMORY...</p>
+    </section>
+
+    <section id="letter-screen" class="panel letter-panel hidden">
+      <p class="label success">ARCHIVE FILE</p>
+      <h1 class="file-number">#040</h1>
+      <p class="subtitle">Recovered Memory</p>
+      <p class="file-status">Status : Restored</p>
 
       <article class="letter">
         <h2 class="letter-heading reveal-item">Happy 4th Anniversary.</h2>
 
-        <p class="reveal-item">
-          きっとこのページに辿り着いてくれると信じていました。
-        </p>
+        <p class="reveal-item">きっとこのページに辿り着いてくれると信じていました。</p>
+        <p class="reveal-item">4周年、おめでとうございます！</p>
 
-        <p class="reveal-item">
-          4周年、おめでとうございます！
-        </p>
+        <p class="reveal-item">これまで何度も手書きの手紙を渡してきました。もちろん、それも喜んでくれていたと思うけれど、ARGが大好きなめかぶくんに少し変わったサプライズを届けたくて、今年はこんな形にしてみました。</p>
 
-        <p class="reveal-item">
-          これまで何度も手書きの手紙を渡してきました。もちろん、それも喜んでくれていたと思うけれど、ARGが大好きなめかぶくんに少し変わったサプライズを届けたくて、今年はこんな形にしてみました。
-        </p>
-
-        <p class="reveal-item">
-          驚いてくれたかな？
-        </p>
+        <p class="reveal-item">驚いてくれたかな？</p>
 
         <hr class="reveal-item" />
 
-        <p class="reveal-item">
-          去年、3周年をお祝いしてから今日までの1年間、本当にいろいろなことがありましたね。
-        </p>
+        <p class="reveal-item">去年、3周年をお祝いしてから今日までの1年間、本当にいろいろなことがありましたね。</p>
+        <p class="reveal-item">めかぶくんにも、新しく始めたお仕事のことや、仲間たちと進めていること、VALORANTの大会のことなど、たくさんの出来事があったと思います。</p>
+        <p class="reveal-item">それを見守っていた私自身にも、いろいろな出来事がありました。</p>
+        <p class="reveal-item">悩んだり、落ち込んだり、時にはめかぶくんに心配をかけてしまったこともありましたね。</p>
 
-        <p class="reveal-item">
-          めかぶくんにも、新しく始めたお仕事のことや、仲間たちと進めていること、VALORANTの大会のことなど、たくさんの出来事があったと思います。
-        </p>
+        <p class="reveal-item">私は昔から自分にあまり自信がなくて、「めかぶくんからどんな人に見えているんだろう」と悪い方向に考えてしまうことも少なくありませんでした。</p>
+        <p class="reveal-item">でも、今年に入ってから――特に5月中旬以降は、自分と向き合うことが少しずつ上手になってきたように思います。</p>
+        <p class="reveal-item">自分の中にも「認めてあげたい」と思える部分を見つけられるようになって、以前よりも自分軸がしっかりしてきました。</p>
+        <p class="reveal-item">「他人からどう見られるか」を気にし続けてしまう呪いから、少しずつ解放されてきたというか、「まぁ、いっか」と一呼吸おいて落ち着けることも増えてきました。</p>
 
-        <p class="reveal-item">
-          それを見守っていた私自身にも、いろいろな出来事がありました。
-        </p>
-
-        <p class="reveal-item">
-          悩んだり、落ち込んだり、時にはめかぶくんに心配をかけてしまったこともありましたね。
-        </p>
-
-        <p class="reveal-item">
-          私は昔から自分にあまり自信がなくて、「めかぶくんからどんな人に見えているんだろう」と悪い方向に考えてしまうことも少なくありませんでした。
-        </p>
-
-        <p class="reveal-item">
-          でも、今年に入ってから――特に5月中旬以降は、自分と向き合うことが少しずつ上手になってきたように思います。
-        </p>
-
-        <p class="reveal-item">
-          自分の中にも「認めてあげたい」と思える部分を見つけられるようになって、以前よりも自分軸がしっかりしてきました。
-        </p>
-
-        <p class="reveal-item">
-          「他人からどう見られるか」を気にし続けてしまう呪いから、少しずつ解放されてきたというか、「まぁ、いっか」と一呼吸おいて落ち着けることも増えてきました。
-        </p>
-
-        <p class="reveal-item">
-          だから今は、自分の心と体を一番大切にしながら生活しています。
-        </p>
-
-        <p class="reveal-item">
-          以前よりリアルタイムで配信を見られない日も増えたけれど、その分、前よりもずっと健やかな気持ちで、元気に応援できていると思っています。
-        </p>
-
-        <p class="reveal-item">
-          めかぶくんにはたくさん心配をかけてしまったと思いますが、ここ最近の私は、ここ数年の中で一番穏やかに過ごせています。
-        </p>
-
-        <p class="reveal-item">
-          だから、安心してもらえたら嬉しいです。
-        </p>
+        <p class="reveal-item">だから今は、自分の心と体を一番大切にしながら生活しています。</p>
+        <p class="reveal-item">以前よりリアルタイムで配信を見られない日も増えたけれど、その分、前よりもずっと健やかな気持ちで、元気に応援できていると思っています。</p>
+        <p class="reveal-item">めかぶくんにはたくさん心配をかけてしまったと思いますが、ここ最近の私は、ここ数年の中で一番穏やかに過ごせています。</p>
+        <p class="reveal-item">だから、安心してもらえたら嬉しいです。</p>
 
         <hr class="reveal-item" />
 
-        <p class="reveal-item">
-          めかぶくんはどうですか？
-        </p>
-
-        <p class="reveal-item">
-          「毎日配信する！」「毎日Shortsを投稿する！」と頑張っていた2〜3年前と比べると、最近は忙しい時には無理せず配信をお休みしたり、旅行に行ったり、お友達と遊んだりしている様子を見ることも増えて、勝手ながら少し安心しています。
-        </p>
-
-        <p class="reveal-item">
-          それでも、きっと毎日忙しく過ごしているんだろうな、と感じることもあります。
-        </p>
-
-        <p class="reveal-item">
-          頑張りたい時があるのも分かります。
-        </p>
-
-        <p class="reveal-item">
-          でも、その分しっかり休んで、これからも心も体も元気でいてください。
-        </p>
+        <p class="reveal-item">めかぶくんはどうですか？</p>
+        <p class="reveal-item">「毎日配信する！」「毎日Shortsを投稿する！」と頑張っていた2〜3年前と比べると、最近は忙しい時には無理せず配信をお休みしたり、旅行に行ったり、お友達と遊んだりしている様子を見ることも増えて、勝手ながら少し安心しています。</p>
+        <p class="reveal-item">それでも、きっと毎日忙しく過ごしているんだろうな、と感じることもあります。</p>
+        <p class="reveal-item">頑張りたい時があるのも分かります。</p>
+        <p class="reveal-item">でも、その分しっかり休んで、これからも心も体も元気でいてください。</p>
 
         <hr class="reveal-item" />
 
-        <p class="reveal-item">
-          4周年を迎え、これから5周年までの一年も、きっといろいろな出来事が待っていると思います。
-        </p>
+        <p class="reveal-item">4周年を迎え、これから5周年までの一年も、きっといろいろな出来事が待っていると思います。</p>
+        <p class="reveal-item">嬉しいことも、大変なことも、その一つひとつがまた新しい思い出になっていくのでしょう。</p>
+        <p class="reveal-item">その一年を、お互いに元気に過ごせますように。</p>
+        <p class="reveal-item">そして、また一年分の思い出が増えた頃、このアーカイブを更新できたら嬉しいです。</p>
 
-        <p class="reveal-item">
-          嬉しいことも、大変なことも、その一つひとつがまた新しい思い出になっていくのでしょう。
-        </p>
-
-        <p class="reveal-item">
-          その一年を、お互いに元気に過ごせますように。
-        </p>
-
-        <p class="reveal-item">
-          そして、また一年分の思い出が増えた頃、このアーカイブを更新できたら嬉しいです。
-        </p>
-
-        <p class="ending reveal-item">
+        <p id="ending-message" class="ending reveal-item">
           End of archive.<br />
           Thank you.
         </p>
