@@ -1,11 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MEMORY ARCHIVE</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>MEMORY ARCHIVE</h1>
-  <p>Authentication Required</p>
+  <main class="container">
+    <section id="login-screen" class="panel">
+      <p class="label">ARCHIVE 040</p>
+      <h1>MEMORY ARCHIVE</h1>
+      <p class="subtitle">Authentication Required</p>
+
+      <div class="form-area">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="off" />
+        <button id="login-button">LOGIN</button>
+      </div>
+
+      <p id="status-message" class="status"></p>
+    </section>
+
+    <section id="letter-screen" class="panel hidden">
+      <p class="label success">IDENTITY VERIFIED</p>
+      <h1>MEMORY ARCHIVE</h1>
+      <p class="subtitle">Unlocked</p>
+
+      <article class="letter">
+        <h2>Happy 4th Anniversary.</h2>
+
+        <p>
+          ここに、4周年のお祝いメッセージを入れます。
+        </p>
+
+        <p>
+          ここに、これまでの思い出や、フォトブックに込めた気持ちを書きます。
+        </p>
+
+        <p class="ending">
+          End of archive.<br />
+          Thank you.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
