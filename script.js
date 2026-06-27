@@ -7,135 +7,44 @@ const loginButton = document.getElementById("login-button");
 const statusMessage = document.getElementById("status-message");
 const connectionMessage = document.getElementById("connection-message");
 
-let audioContext;
-let ambientGain;
-let musicGain;
-let ambientOscillators = [];
-let musicTimer;
-let hasStartedAmbient = false;
+const typeSound = new Audio("type.mp3");
+const authorizeSound = new Audio("authorize.mp3");
+const errorSound = new Audio("error.mp3");
+const successSound = new Audio("success.mp3");
+const musicbox = new Audio("musicbox.mp3");
+
+musicbox.volume = 0;
+musicbox.loop = false;
+
+[typeSound, authorizeSound, errorSound, successSound].forEach((sound) => {
+  sound.volume = 0.45;
+});
 
 window.addEventListener("load", () => {
   passwordInput.focus();
 });
 
-function createAudioContext() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
-  if (audioContext.state === "suspended") {
-    audioContext.resume();
-  }
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
 }
 
-function startAmbientSound() {
-  if (hasStartedAmbient) return;
+function fadeAudio(audio, targetVolume, duration) {
+  const steps = 30;
+  const startVolume = audio.volume;
+  const volumeStep = (targetVolume - startVolume) / steps;
+  const stepDuration = duration / steps;
+  let currentStep = 0;
 
-  createAudioContext();
-  hasStartedAmbient = true;
+  const interval = setInterval(() => {
+    currentStep += 1;
+    audio.volume = Math.min(1, Math.max(0, startVolume + volumeStep * currentStep));
 
-  ambientGain = audioContext.createGain();
-  ambientGain.gain.setValueAtTime(0.025, audioContext.currentTime);
-  ambientGain.connect(audioContext.destination);
-
-  const frequencies = [82, 123, 164];
-
-  frequencies.forEach((frequency, index) => {
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    oscillator.type = index === 0 ? "sine" : "triangle";
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-
-    gain.gain.setValueAtTime(0.015, audioContext.currentTime);
-
-    oscillator.connect(gain);
-    gain.connect(ambientGain);
-
-    oscillator.start();
-
-    ambientOscillators.push({ oscillator, gain });
-  });
-}
-
-function stopAmbientSound() {
-  if (!ambientGain || !audioContext) return;
-
-  ambientGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
-
-  setTimeout(() => {
-    ambientOscillators.forEach(({ oscillator }) => {
-      try {
-        oscillator.stop();
-      } catch (error) {
-        // Already stopped.
-      }
-    });
-
-    ambientOscillators = [];
-    hasStartedAmbient = false;
-  }, 600);
-}
-
-function playMusicNote(frequency, startTime, duration) {
-  if (!audioContext || !musicGain) return;
-
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(frequency, startTime);
-
-  gain.gain.setValueAtTime(0.0001, startTime);
-  gain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.03);
-  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-  oscillator.connect(gain);
-  gain.connect(musicGain);
-
-  oscillator.start(startTime);
-  oscillator.stop(startTime + duration + 0.05);
-}
-
-function startMusicBox() {
-  createAudioContext();
-
-  musicGain = audioContext.createGain();
-  musicGain.gain.setValueAtTime(0.018, audioContext.currentTime);
-  musicGain.connect(audioContext.destination);
-
-  const melody = [
-    523.25, 659.25, 783.99, 659.25,
-    587.33, 698.46, 880.00, 698.46,
-    523.25, 659.25, 783.99, 1046.50,
-    987.77, 783.99, 659.25, 523.25
-  ];
-
-  let index = 0;
-
-  function playNextNote() {
-    if (!audioContext || !musicGain) return;
-
-    const now = audioContext.currentTime;
-    const frequency = melody[index % melody.length];
-
-    playMusicNote(frequency, now, 0.75);
-
-    index += 1;
-    musicTimer = setTimeout(playNextNote, 900);
-  }
-
-  playNextNote();
-}
-
-function stopMusicBox() {
-  if (musicTimer) {
-    clearTimeout(musicTimer);
-  }
-
-  if (musicGain && audioContext) {
-    musicGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
-  }
+    if (currentStep >= steps) {
+      audio.volume = targetVolume;
+      clearInterval(interval);
+    }
+  }, stepDuration);
 }
 
 function setStatus(message, isError = false) {
@@ -148,46 +57,60 @@ function revealLetter() {
   letterScreen.classList.remove("hidden");
   letterScreen.classList.add("fade-in");
 
-  startMusicBox();
+  musicbox.currentTime = 0;
+  musicbox.volume = 0;
+  musicbox.play().then(() => {
+    fadeAudio(musicbox, 0.38, 2200);
+  }).catch(() => {});
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   setTimeout(() => {
     connectionMessage.classList.remove("hidden");
     connectionMessage.classList.add("fade-in");
-  }, 6000);
+    fadeAudio(musicbox, 0, 5000);
+  }, 18000);
+}
+
+function resetAfterError() {
+  loginButton.disabled = false;
+  passwordInput.disabled = false;
+  loginButton.textContent = "AUTHORIZE";
+  passwordInput.value = "";
+  passwordInput.focus();
 }
 
 function authorize() {
-  startAmbientSound();
-
   const enteredPassword = passwordInput.value.trim().toLowerCase();
 
   if (!enteredPassword) {
+    playSound(errorSound);
     setStatus("Access key required.", true);
+    resetAfterError();
     return;
   }
 
   if (enteredPassword !== correctPassword) {
+    playSound(errorSound);
     setStatus("Access denied.", true);
-    passwordInput.value = "";
-    passwordInput.focus();
+    resetAfterError();
     return;
   }
 
+  playSound(authorizeSound);
+
   loginButton.disabled = true;
   passwordInput.disabled = true;
-
-  stopAmbientSound();
+  loginButton.textContent = "AUTHORIZING...";
 
   const sequence = [
-    { text: "Verifying access key...", delay: 0 },
-    { text: "Authenticating... ██░░░░░░░░", delay: 700 },
-    { text: "Authenticating... █████░░░░░", delay: 1400 },
-    { text: "Authenticating... ██████████", delay: 2100 },
-    { text: "Decrypting archive...", delay: 2850 },
-    { text: "Archive unlocked.", delay: 3650 },
-    { text: "Welcome back.", delay: 4400 }
+    { text: "Verifying access key...", delay: 450 },
+    { text: "Authenticating... ██░░░░░░░░", delay: 1200 },
+    { text: "Authenticating... █████░░░░░", delay: 1950 },
+    { text: "Authenticating... ██████████", delay: 2700 },
+    { text: "Decrypting archive...", delay: 3500 },
+    { text: "Archive unlocked.", delay: 4400 },
+    { text: "Welcome back.", delay: 5200 }
   ];
 
   sequence.forEach((item) => {
@@ -197,22 +120,39 @@ function authorize() {
   });
 
   setTimeout(() => {
+    playSound(successSound);
+  }, 4400);
+
+  setTimeout(() => {
     revealLetter();
-  }, 5400);
+  }, 6400);
 }
 
-passwordInput.addEventListener("focus", startAmbientSound);
-passwordInput.addEventListener("input", startAmbientSound);
-
-loginButton.addEventListener("click", authorize);
-
 passwordInput.addEventListener("keydown", (event) => {
+  const ignoredKeys = [
+    "Backspace",
+    "Delete",
+    "Tab",
+    "Shift",
+    "Control",
+    "Alt",
+    "Meta",
+    "CapsLock",
+    "Escape",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "Enter"
+  ];
+
+  if (!ignoredKeys.includes(event.key) && event.key.length === 1) {
+    playSound(typeSound);
+  }
+
   if (event.key === "Enter") {
     authorize();
   }
 });
 
-window.addEventListener("beforeunload", () => {
-  stopAmbientSound();
-  stopMusicBox();
-});
+loginButton.addEventListener("click", authorize);
